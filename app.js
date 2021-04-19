@@ -10,6 +10,8 @@ mongoSanitize = require("express-mongo-sanitize");
 rateLimit = require("express-rate-limit");
 xss = require("xss-clean");
 helmet = require("helmet");
+// add validator
+const { check, validationResult } = require("express-validator");
 
 //Connecting database
 mongoose.connect("mongodb://localhost/auth_demo");
@@ -52,9 +54,6 @@ app.use(express.json({ limit: "10kb" }));
 app.use(xss());
 app.use(helmet());
 
-// add validator
-const { check, validationResult } = require("express-validator");
-
 //=======================
 //      R O U T E S
 //=======================
@@ -86,8 +85,16 @@ app.post(
     check("username")
       .isLength({ min: 1 })
       .withMessage("Please enter a username"),
+    check("password")
+      .isLength({ min: 8 })
+      .matches(/\d/)
+      .matches(/[a-zA-Z0-9]/)
+      .matches(/\+\-\*\/\~\!\@\#\$\%\^\&\(\)\_\=/)
+      .withMessage(
+        "Password should contain at least 8 characters, one lowercase letter, one uppercase letter, one number and one special character"
+      ),
   ],
-  async (req, res) => {
+  (req, res) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
       User.register(
@@ -110,7 +117,6 @@ app.post(
     } else {
       res.render("register", {
         errors: errors.array(),
-        data: req.body,
       });
     }
   }
