@@ -1,0 +1,39 @@
+<%- include('header'); %> <%- include('nav'); %>
+<main>
+  <h3>Sign Up</h3>
+  <% if (errors) { %>
+  <p><%= errors %></p>
+  <% } %>
+  <form action="/register" method="POST">
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" />
+    <label for="password">Password</label>
+    <input
+      type="password"
+      id="password"
+      name="password"
+      placeholder="Password"
+      v-model="password"
+    />
+    <small id="passwordHelp" class="form-text text-muted"
+      >Password should contain
+      <span :class="has_minimum_length ? 'has_required' : ''"
+        >at least 8 characters</span
+      >,
+      <span :class="has_lowercase ? 'has_required' : ''"
+        >one lowercase letter</span
+      >,
+      <span :class="has_uppercase ? 'has_required' : ''"
+        >one uppercase letter</span
+      >, <span :class="has_number ? 'has_required' : ''">one number</span>, and
+      <span :class="has_special ? 'has_required' : ''"
+        >one special character.</span
+      >
+    </small>
+    <label for="email">Email</label>
+    <input type="email" name="email" id="email" />
+    <label for="phone">Phone</label>
+    <input type="text" name="phone" id="phone" />
+    <button class="btn btn-success">Submit</button>
+  </form>
+</main>
